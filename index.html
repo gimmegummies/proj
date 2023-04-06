@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script> -->
+    <title>Weather App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="media/favicon.png" />
+    <link rel="stylesheet" href="style/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="app">
+        <form class="search_bar" id="search-form">
+          <input
+            type="search"
+            class="search_bar__input"
+            id="search-input"
+            placeholder="City..."
+            autocomplete="off"
+          />
+          <input type="submit" class="search_bar__btn" value="Pow!" />
+          <input
+            type="button"
+            class="search_bar__btn"
+            id="my-city-btn"
+            value="My City"
+          />
+        </form>
+        <div class="main_content">
+          <div class="main_content__left">
+            <div class="city_weather_container">
+              <h1 class="left__current_city" id="current-city"></h1>
+              <span id="weather-description"></span>
+            </div>
+            <h2 class="left__hour_date" id="section-date">
+              <!-- <span>Friday</span>
+              <br />
+              <span>21:45</span> -->
+            </h2>
+            <div class="left__current_temp">
+              <p id="current-temp"></p>
+              <span class="temp_unit" id="temp-celsius">°C</span>
+              <!-- <div class="temp_units">
+                <span class="temp_unit" id="temp-celsius">°C</span>
+                |
+                <span class="temp_unit" id="temp-fahrenheit">°F</span>
+              </div> -->
+            </div>
+            <div class="left__current_temp_icon">
+              <img src="media/sun.png" alt="weather icon" id="weather-icon" />
+            </div>
+          </div>
+          <div class="main_content__right">
+            <div class="right__forecast">
+              <p>
+                SAT
+                <br />
+                10.03.23
+              </p>
+              <p>11°</p>
+              <p><img src="media/sun_cloud.png" alt="weather icon" /></p>
+              <p>
+                SUN
+                <br />
+                11.03.23
+              </p>
+              <p>9°</p>
+              <p><img src="media/cloud.png" alt="weather icon" /></p>
+              <p>
+                MON
+                <br />
+                12.03.23
+              </p>
+              <p>8°</p>
+              <p><img src="media/thunder.png" alt="weather icon" /></p>
+              <p>
+                TUE
+                <br />
+                13.03.23
+              </p>
+              <p>9°</p>
+              <p><img src="media/sun_cloud.png" alt="weather icon" /></p>
+              <p>
+                WED
+                <br />
+                14.03.23
+              </p>
+              <p>12°</p>
+              <p><img src="media/rainbow.png" alt="weather icon" /></p>
+            </div>
+          </div>
+        </div>
+        <footer><p>Coded by Ksu</p></footer>
+      </div>
+    </div>
+    <script src="/script/script.js"></script>
+  </body>
+</html>
