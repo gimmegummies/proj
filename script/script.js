@@ -180,7 +180,7 @@ async function showWeatherInMyCity() {
 async function getMyCityWeatherData(url, lat, lon) {
   try {
     const response = await axios.get(
-      `${url}?units=${units}&appid=${apiKey}&lat=${lat}&lon=${lon}`
+      `${url}units=${units}&appid=${apiKey}&lat=${lat}&lon=${lon}`
     );
     return response.data;
   } catch (err) {
