@@ -136,6 +136,10 @@ async function showWeather(e) {
 
   const conditions = data.weather[0].main;
   updateCurrentImg(conditions);
+
+  const forecastRef = document.querySelector(".main_content__right");
+  forecastRef.innerHTML = "";
+  updateForecast(forecastUrl, city);
 }
 
 function getCity() {
@@ -220,9 +224,9 @@ async function showInitForecast() {
   const data = await getWeatherData(forecastUrl, city);
   const list = data.list;
   const respArr = extractWeatherData(list);
-  console.log(respArr);
+  // console.log(respArr);
 
-  displayWeatherData(respArr, date);
+  displayWeatherData(respArr);
 }
 
 //since the new API call returns daily and HOURLY forecast, was decided to display the forecast for 12.00 each day only
@@ -293,3 +297,12 @@ function createIconP(descr) {
 }
 
 showInitForecast();
+
+/**************************************************************************************************************************/
+async function updateForecast(url, city) {
+  const data = await getWeatherData(url, city);
+  const list = data.list;
+  const respArr = extractWeatherData(list);
+
+  displayWeatherData(respArr, date);
+}
