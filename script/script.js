@@ -1,4 +1,4 @@
-//block for displaying the searched city
+// displaying the searched city
 
 // const getCity = function (e) {
 //   let searchInput = document.querySelector("#search-input");
@@ -14,7 +14,9 @@
 // let searchForm = document.querySelector("#search-form");
 // searchForm.addEventListener("submit", getCity);
 
-//block for displaying date and time
+/**************************************************************************************************************************/
+//*displaying date and time
+
 function getDate(date) {
   let days = [
     "Sunday",
@@ -63,17 +65,19 @@ sectionDate.innerHTML = getDate(date);
 // celsUnit.addEventListener("click", getCelsius);
 // fahrUnit.addEventListener("click", getFahrenheit);
 
-// adding functionality: weather API, geolocation API
+//* adding functionality: weather API, geolocation API
 const apiKey = "1ee4264117b73d2263eecd562f31ef5c";
 const units = "metric";
-let apiUrlRoot = "https://api.openweathermap.org/data/2.5/weather";
+let apiUrlRoot = "https://api.openweathermap.org/data/2.5/weather?";
 
-// showing the initial city ("Kharkiv") and temperature when the page is loaded
+/**************************************************************************************************************************/
+//* showing the initial city ("Kharkiv") and temperature when the page is loaded
+
 async function getInitialCityTemp() {
   const city = "Kharkiv";
   updateCurrentCity(city);
 
-  const data = await getCurrentCityWeatherData(city);
+  const data = await getWeatherData(apiUrlRoot, city);
 
   const temp = Math.round(data.main.temp);
   updateCurrentTemp(temp);
@@ -90,10 +94,10 @@ function updateCurrentCity(city) {
   cityRef.textContent = city;
 }
 
-async function getCurrentCityWeatherData(city) {
+async function getWeatherData(url, city) {
   try {
     const response = await axios.get(
-      `${apiUrlRoot}?q=${city}&appid=${apiKey}&units=${units}`
+      `${url}q=${city}&appid=${apiKey}&units=${units}`
     );
     return response.data;
   } catch (err) {
@@ -113,14 +117,16 @@ function updateCurrentWeatherDescription(descr) {
 
 document.addEventListener("DOMContentLoaded", getInitialCityTemp);
 
-// showing temperature according to the input value
+/**************************************************************************************************************************/
+//* showing temperature according to the input value
+
 async function showWeather(e) {
   e.preventDefault();
 
   const city = getCity();
   updateCurrentCity(city);
 
-  const data = await getCurrentCityWeatherData(city);
+  const data = await getWeatherData(apiUrlRoot, city);
 
   const temp = Math.round(data.main.temp);
   updateCurrentTemp(temp);
@@ -143,7 +149,8 @@ function getCity() {
 const searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", showWeather);
 
-// get the current weather with the geolocation API
+/**************************************************************************************************************************/
+//* get the current weather with the geolocation API
 
 async function showWeatherInMyCity() {
   try {
@@ -152,7 +159,7 @@ async function showWeatherInMyCity() {
     });
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    const data = await getMyCityWeatherData(lat, lon);
+    const data = await getMyCityWeatherData(apiUrlRoot, lat, lon);
 
     const city = data.name;
     updateCurrentCity(city);
@@ -170,10 +177,10 @@ async function showWeatherInMyCity() {
   }
 }
 
-async function getMyCityWeatherData(lat, lon) {
+async function getMyCityWeatherData(url, lat, lon) {
   try {
     const response = await axios.get(
-      `${apiUrlRoot}?units=${units}&appid=${apiKey}&lat=${lat}&lon=${lon}`
+      `${url}?units=${units}&appid=${apiKey}&lat=${lat}&lon=${lon}`
     );
     return response.data;
   } catch (err) {
@@ -184,7 +191,9 @@ async function getMyCityWeatherData(lat, lon) {
 const currentCityBtn = document.querySelector("#my-city-btn");
 currentCityBtn.addEventListener("click", showWeatherInMyCity);
 
-// get the img according to the conditions
+/**************************************************************************************************************************/
+//* get the img according to the conditions
+
 const icons = {
   Clouds: "media/cloud.png",
   Thunderstorm: "media/thunder.png",
@@ -199,3 +208,88 @@ function updateCurrentImg(weather) {
   const imgRef = document.querySelector("#weather-icon");
   imgRef.src = icons[weather];
 }
+
+/**************************************************************************************************************************/
+//* Adding the functionality for displaying the 5-days forecast
+
+// To get the daily forecast, we need to use another root url for the API call (below)
+const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?";
+
+async function showInitForecast() {
+  const city = "Kharkiv";
+  const data = await getWeatherData(forecastUrl, city);
+  const list = data.list;
+  const respArr = extractWeatherData(list);
+  console.log(respArr);
+
+  displayWeatherData(respArr, date);
+}
+
+//since the new API call returns daily and HOURLY forecast, was decided to display the forecast for 12.00 each day only
+//for this purpose the "for" loop has such a strange logic
+// TODO: logic in the "for" loop is incorrect: need to fix later;
+
+function extractWeatherData(list) {
+  const respArr = [];
+  for (let i = 6; i < list.length; i += 8) {
+    respArr.push({
+      temp: Math.round(list[i].main.temp),
+      descr: list[i].weather[0].main,
+    });
+  }
+  return respArr;
+}
+
+function displayWeatherData(arr) {
+  const forecastRef = document.querySelector(".main_content__right"); // selecting the forecast section
+
+  const div = document.createElement("div"); // creating the container
+  div.className = "right__forecast";
+  div.id = "right-forecast";
+
+  let elementIndex = 1; // will be used as increment when getting the date and day
+
+  arr.forEach((el) => {
+    const dateP = createDateP(elementIndex);
+    const tempP = createTempP(el.temp);
+    const iconP = createIconP(el.descr);
+    div.append(dateP, tempP, iconP);
+    elementIndex++; // increments the index to get the next five days and dates
+  });
+  forecastRef.appendChild(div);
+}
+
+function createDateP(index) {
+  const dateP = document.createElement("p");
+  dateP.className = "forecast-date";
+
+  const day = moment().add(index, "days").format("ddd").slice(0, 3);
+  const date = moment().add(index, "days").format("DD/MM/YYYY");
+
+  dateP.innerHTML = `${day}<br />${date}`;
+
+  return dateP;
+}
+
+function createTempP(temp) {
+  const tempP = document.createElement("p");
+  tempP.className = "forecast-temp";
+
+  tempP.innerHTML = `${temp}°`;
+
+  return tempP;
+}
+
+function createIconP(descr) {
+  const iconP = document.createElement("p");
+
+  iconP.innerHTML = `<img
+                  src="${icons[descr]}"
+                  alt="weather icon"
+                  class="forecast-img"
+                />`;
+
+  return iconP;
+}
+
+showInitForecast();

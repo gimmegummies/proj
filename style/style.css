@@ -176,6 +176,10 @@ footer {
   font-weight: lighter;
 }
 
+.forecast-date {
+  text-transform: uppercase;
+}
+
 .main_content__right img {
   max-width: 30px;
 }
