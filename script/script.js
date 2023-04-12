@@ -50,8 +50,6 @@ sectionDate.innerHTML = getDate(date);
 // fahrUnit.addEventListener("click", getFahrenheit);
 
 //* adding functionality: weather API, geolocation API
-// let apiUrlRoot = "https://api.openweathermap.org/data/2.5/weather?";
-// const apiKey = "1ee4264117b73d2263eecd562f31ef5c";
 let apiUrlRoot = "https://api.shecodes.io/weather/v1/current?";
 const apiKey = "785e4002t4o34d2ed60bb3aec801e9af";
 const units = "metric";
@@ -71,7 +69,11 @@ async function getInitialCityTemp() {
   const description = data.condition.description;
   updateCurrentWeatherDescription(description);
 
-  updateCurrentImg(description);
+  const imgRef = document.querySelector("#weather-icon");
+  const url = updateCurrentImg(description);
+  imgRef.src = url;
+
+  showInitForecast();
 }
 
 function updateCurrentCity(city) {
@@ -113,14 +115,15 @@ async function showWeather(e) {
 
   const data = await getWeatherData(apiUrlRoot, city);
 
-  const temp = Math.round(data.main.temp);
+  const temp = Math.round(data.temperature.current);
   updateCurrentTemp(temp);
 
-  const description = data.weather[0].description;
+  const description = data.condition.description;
   updateCurrentWeatherDescription(description);
 
-  const conditions = data.weather[0].main;
-  updateCurrentImg(conditions);
+  const imgRef = document.querySelector("#weather-icon");
+  const url = updateCurrentImg(description);
+  imgRef.src = url;
 
   const forecastRef = document.querySelector(".main_content__right");
   forecastRef.innerHTML = "";
@@ -192,46 +195,43 @@ const icons = {
 };
 
 function updateCurrentImg(weather) {
-  const imgRef = document.querySelector("#weather-icon");
   if (weather.includes("clear")) {
-    imgRef.src = icons["clear"];
+    url = icons["clear"];
   } else if (weather.includes("clouds") && weather.includes("few")) {
-    imgRef.src = icons["few"];
+    url = icons["few"];
   } else if (weather.includes("rain") || weather.includes("thunderstorm")) {
-    imgRef.src = icons["rain"];
+    url = icons["rain"];
   } else if (weather.includes("mist")) {
-    imgRef.src = icons["mist"];
+    url = icons["mist"];
   } else if (weather.includes("clouds")) {
-    imgRef.src = icons["clouds"];
+    url = icons["clouds"];
   }
+  return url;
 }
 
 /**************************************************************************************************************************/
 //* Adding the functionality for displaying the 5-days forecast
 
 // To get the daily forecast, we need to use another root url for the API call (below)
-const forecastUrl = "https://api.openweathermap.org/data/2.5/forecast?";
+const forecastUrl = "https://api.shecodes.io/weather/v1/forecast?";
 
 async function showInitForecast() {
   const city = "Kharkiv";
   const data = await getWeatherData(forecastUrl, city);
-  const list = data.list;
+  const list = data.daily;
+
   const respArr = extractWeatherData(list);
-  // console.log(respArr);
 
   displayWeatherData(respArr);
 }
 
-//since the new API call returns daily and HOURLY forecast, was decided to display the forecast for 12.00 each day only
-//for this purpose the "for" loop has such a strange logic
-// TODO: logic in the "for" loop is incorrect: need to fix later;
-
 function extractWeatherData(list) {
   const respArr = [];
-  for (let i = 6; i < list.length; i += 8) {
+  const len = 5;
+  for (let i = 1; i <= len; i++) {
     respArr.push({
-      temp: Math.round(list[i].main.temp),
-      descr: list[i].weather[0].main,
+      temp: Math.round(list[i].temperature.day),
+      descr: list[i].condition.description,
     });
   }
   return respArr;
@@ -279,9 +279,10 @@ function createTempP(temp) {
 
 function createIconP(descr) {
   const iconP = document.createElement("p");
+  const url = updateCurrentImg(descr);
 
   iconP.innerHTML = `<img
-                  src="${icons[descr]}"
+                  src=${url}
                   alt="weather icon"
                   class="forecast-img"
                 />`;
@@ -289,13 +290,11 @@ function createIconP(descr) {
   return iconP;
 }
 
-showInitForecast();
-
 /**************************************************************************************************************************/
 // function for displaying the 5-days forecast on the input change (used above, in the "showWeather" function)
 async function updateForecast(url, city) {
   const data = await getWeatherData(url, city);
-  const list = data.list;
+  const list = data.daily;
   const respArr = extractWeatherData(list);
 
   displayWeatherData(respArr, date);
