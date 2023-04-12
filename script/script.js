@@ -299,6 +299,7 @@ function createIconP(descr) {
 showInitForecast();
 
 /**************************************************************************************************************************/
+// function for displaying the 5-days forecast on the input change (used above, in the "showWeather" function)
 async function updateForecast(url, city) {
   const data = await getWeatherData(url, city);
   const list = data.list;
