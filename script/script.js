@@ -1,19 +1,3 @@
-// displaying the searched city
-
-// const getCity = function (e) {
-//   let searchInput = document.querySelector("#search-input");
-//   let inputValue = searchInput.value.trim();
-//   e.preventDefault();
-//   //replaced the line below to "text-transform: capitalize" in the css file for the corresponding element (.left__current_city)
-//   // inputValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
-//   let city = document.querySelector("#current-city");
-//   city.textContent = inputValue;
-//   searchInput.value = "";
-// };
-
-// let searchForm = document.querySelector("#search-form");
-// searchForm.addEventListener("submit", getCity);
-
 /**************************************************************************************************************************/
 //*displaying date and time
 
@@ -66,9 +50,11 @@ sectionDate.innerHTML = getDate(date);
 // fahrUnit.addEventListener("click", getFahrenheit);
 
 //* adding functionality: weather API, geolocation API
-const apiKey = "1ee4264117b73d2263eecd562f31ef5c";
+// let apiUrlRoot = "https://api.openweathermap.org/data/2.5/weather?";
+// const apiKey = "1ee4264117b73d2263eecd562f31ef5c";
+let apiUrlRoot = "https://api.shecodes.io/weather/v1/current?";
+const apiKey = "785e4002t4o34d2ed60bb3aec801e9af";
 const units = "metric";
-let apiUrlRoot = "https://api.openweathermap.org/data/2.5/weather?";
 
 /**************************************************************************************************************************/
 //* showing the initial city ("Kharkiv") and temperature when the page is loaded
@@ -79,14 +65,13 @@ async function getInitialCityTemp() {
 
   const data = await getWeatherData(apiUrlRoot, city);
 
-  const temp = Math.round(data.main.temp);
+  const temp = Math.round(data.temperature.current);
   updateCurrentTemp(temp);
 
-  const description = data.weather[0].description;
+  const description = data.condition.description;
   updateCurrentWeatherDescription(description);
 
-  const conditions = data.weather[0].main;
-  updateCurrentImg(conditions);
+  updateCurrentImg(description);
 }
 
 function updateCurrentCity(city) {
@@ -97,7 +82,7 @@ function updateCurrentCity(city) {
 async function getWeatherData(url, city) {
   try {
     const response = await axios.get(
-      `${url}q=${city}&appid=${apiKey}&units=${units}`
+      `${url}query=${city}&key=${apiKey}&units=${units}`
     );
     return response.data;
   } catch (err) {
@@ -199,18 +184,26 @@ currentCityBtn.addEventListener("click", showWeatherInMyCity);
 //* get the img according to the conditions
 
 const icons = {
-  Clouds: "media/cloud.png",
-  Thunderstorm: "media/thunder.png",
-  Rain: "media/thunder.png",
-  Drizzle: "media/rainbow.png",
-  Mist: "media/cloud.png",
-  Fog: "media/sun_cloud.png",
-  Clear: "media/sun.png",
+  clouds: "media/cloud.png",
+  rain: "media/thunder.png",
+  mist: "media/rainbow.png",
+  clear: "media/sun.png",
+  few: "media/sun_cloud.png",
 };
 
 function updateCurrentImg(weather) {
   const imgRef = document.querySelector("#weather-icon");
-  imgRef.src = icons[weather];
+  if (weather.includes("clear")) {
+    imgRef.src = icons["clear"];
+  } else if (weather.includes("clouds") && weather.includes("few")) {
+    imgRef.src = icons["few"];
+  } else if (weather.includes("rain") || weather.includes("thunderstorm")) {
+    imgRef.src = icons["rain"];
+  } else if (weather.includes("mist")) {
+    imgRef.src = icons["mist"];
+  } else if (weather.includes("clouds")) {
+    imgRef.src = icons["clouds"];
+  }
 }
 
 /**************************************************************************************************************************/
