@@ -153,17 +153,18 @@ async function showWeatherInMyCity() {
     const lon = position.coords.longitude;
     const data = await getMyCityWeatherData(apiUrlRoot, lat, lon);
 
-    const city = data.name;
+    const city = data.city;
     updateCurrentCity(city);
 
-    const temp = Math.round(data.main.temp);
+    const temp = Math.round(data.temperature.current);
     updateCurrentTemp(temp);
 
-    const description = data.weather[0].description;
+    const description = data.condition.description;
     updateCurrentWeatherDescription(description);
 
-    const conditions = data.weather[0].main;
-    updateCurrentImg(conditions);
+    const imgRef = document.querySelector("#weather-icon");
+    const url = updateCurrentImg(description);
+    imgRef.src = url;
   } catch (err) {
     console.error(err.message);
   }
@@ -172,7 +173,7 @@ async function showWeatherInMyCity() {
 async function getMyCityWeatherData(url, lat, lon) {
   try {
     const response = await axios.get(
-      `${url}units=${units}&appid=${apiKey}&lat=${lat}&lon=${lon}`
+      `${url}units=${units}&key=${apiKey}&lat=${lat}&lon=${lon}`
     );
     return response.data;
   } catch (err) {
@@ -299,3 +300,5 @@ async function updateForecast(url, city) {
 
   displayWeatherData(respArr, date);
 }
+
+// TODO: need to update showWeatherInMyCity function so that the forecast is also shown (mb, without adding another func for updating the forecast through the API call by using lon&lat)
