@@ -69,9 +69,7 @@ async function getInitialCityTemp() {
   const description = data.condition.description;
   updateCurrentWeatherDescription(description);
 
-  const imgRef = document.querySelector("#weather-icon");
-  const url = updateCurrentImg(description);
-  imgRef.src = url;
+  updateMainIcon(description);
 
   showInitForecast();
 }
@@ -121,9 +119,7 @@ async function showWeather(e) {
   const description = data.condition.description;
   updateCurrentWeatherDescription(description);
 
-  const imgRef = document.querySelector("#weather-icon");
-  const url = updateCurrentImg(description);
-  imgRef.src = url;
+  updateMainIcon(description);
 
   const forecastRef = document.querySelector(".main_content__right");
   forecastRef.innerHTML = "";
@@ -162,9 +158,10 @@ async function showWeatherInMyCity() {
     const description = data.condition.description;
     updateCurrentWeatherDescription(description);
 
-    const imgRef = document.querySelector("#weather-icon");
-    const url = updateCurrentImg(description);
-    imgRef.src = url;
+    updateMainIcon(description);
+    // const imgRef = document.querySelector("#weather-icon");
+    // const url = updateCurrentImg(description);
+    // imgRef.src = url;
   } catch (err) {
     console.error(err.message);
   }
@@ -208,6 +205,12 @@ function updateCurrentImg(weather) {
     url = icons["clouds"];
   }
   return url;
+}
+
+function updateMainIcon(descr) {
+  const imgRef = document.querySelector("#weather-icon");
+  const url = updateCurrentImg(descr);
+  imgRef.src = url;
 }
 
 /**************************************************************************************************************************/
