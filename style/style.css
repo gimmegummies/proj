@@ -184,27 +184,6 @@ footer {
   max-width: 30px;
 }
 
-@media only screen and (max-width: 580px) {
-  .main_content {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .main_content__left {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-content: space-around;
-  }
-
-  .temp_units {
-    font-size: 2vh;
-  }
-
-  .search_bar__btn {
-    padding: 1rem;
-  }
-}
-
 .par_coded_by {
   width: clamp(120px, 800px, 80vw);
   margin: 0rem auto 4rem auto;
@@ -223,4 +202,33 @@ footer {
 
 .git-link:visited {
   color: rgb(16, 147, 147);
+}
+
+@media only screen and (max-width: 580px) {
+  .main_content {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .main_content__left {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: space-around;
+  }
+
+  .temp_units {
+    font-size: 2vh;
+  }
+
+  .search_bar__btn {
+    padding: 0.5rem;
+  }
+
+  .search_bar__btn:hover {
+    box-shadow: none;
+    background-color: #adadad;
+    color: #fff;
+    font-weight: normal;
+    transform: none;
+  }
 }
