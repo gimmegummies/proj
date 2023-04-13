@@ -159,9 +159,10 @@ async function showWeatherInMyCity() {
     updateCurrentWeatherDescription(description);
 
     updateMainIcon(description);
-    // const imgRef = document.querySelector("#weather-icon");
-    // const url = updateCurrentImg(description);
-    // imgRef.src = url;
+
+    const forecastRef = document.querySelector(".main_content__right");
+    forecastRef.innerHTML = "";
+    updateForecast(forecastUrl, city);
   } catch (err) {
     console.error(err.message);
   }
@@ -304,4 +305,4 @@ async function updateForecast(url, city) {
   displayWeatherData(respArr, date);
 }
 
-// TODO: need to update showWeatherInMyCity function so that the forecast is also shown (mb, without adding another func for updating the forecast through the API call by using lon&lat)
+// TODO: add cels to fahr switcher
