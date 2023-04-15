@@ -1,4 +1,6 @@
 /**************************************************************************************************************************/
+let temp = null;
+
 //*displaying date and time
 
 function getDate(date) {
@@ -29,26 +31,6 @@ let sectionDate = document.querySelector("#section-date");
 
 sectionDate.innerHTML = getDate(date);
 
-//block for displaying the fake temp + functions for converting to celsius/fahrenheit
-// let temperature = 17;
-// let tempDisp = document.querySelector(".left__current_temp p");
-// tempDisp.textContent = temperature;
-
-// function getCelsius() {
-//   tempDisp.textContent = temperature;
-// }
-
-// function getFahrenheit() {
-//   let temperatureFahr = Math.floor(temperature * 1.8 + 32);
-//   tempDisp.textContent = temperatureFahr;
-// }
-
-// let celsUnit = document.querySelector("#temp-celsius");
-// let fahrUnit = document.querySelector("#temp-fahrenheit");
-
-// celsUnit.addEventListener("click", getCelsius);
-// fahrUnit.addEventListener("click", getFahrenheit);
-
 //* adding functionality: weather API, geolocation API
 let apiUrlRoot = "https://api.shecodes.io/weather/v1/current?";
 const apiKey = "785e4002t4o34d2ed60bb3aec801e9af";
@@ -63,7 +45,7 @@ async function getInitialCityTemp() {
 
   const data = await getWeatherData(apiUrlRoot, city);
 
-  const temp = Math.round(data.temperature.current);
+  temp = Math.round(data.temperature.current);
   updateCurrentTemp(temp);
 
   const description = data.condition.description;
@@ -113,7 +95,7 @@ async function showWeather(e) {
 
   const data = await getWeatherData(apiUrlRoot, city);
 
-  const temp = Math.round(data.temperature.current);
+  temp = Math.round(data.temperature.current);
   updateCurrentTemp(temp);
 
   const description = data.condition.description;
@@ -152,7 +134,7 @@ async function showWeatherInMyCity() {
     const city = data.city;
     updateCurrentCity(city);
 
-    const temp = Math.round(data.temperature.current);
+    temp = Math.round(data.temperature.current);
     updateCurrentTemp(temp);
 
     const description = data.condition.description;
@@ -305,4 +287,38 @@ async function updateForecast(url, city) {
   displayWeatherData(respArr, date);
 }
 
-// TODO: add cels to fahr switcher
+//* temp units switcher
+
+const tempDisp = document.querySelector(".left__current_temp p");
+const celsUnit = document.querySelector("#temp-celsius");
+const fahrUnit = document.querySelector("#temp-fahrenheit");
+
+function getCelsius() {
+  tempDisp.textContent = temp;
+  toggleActiveClass(fahrUnit);
+  toggleActiveClass(celsUnit);
+}
+
+function getFahrenheit() {
+  let temperatureFahr = Math.floor(temp * 1.8 + 32);
+  tempDisp.textContent = temperatureFahr;
+  toggleActiveClass(fahrUnit);
+  toggleActiveClass(celsUnit);
+}
+
+function toggleActiveClass(element) {
+  element.classList.contains("active")
+    ? element.classList.remove("active")
+    : element.classList.add("active");
+}
+
+// trick to improve the function above
+
+// function toggleActiveClass(element) {
+//   element.classList.toggle("active");
+// }
+
+celsUnit.addEventListener("click", getCelsius);
+fahrUnit.addEventListener("click", getFahrenheit);
+
+// TODO: make units switcher for the forecast
