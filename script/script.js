@@ -53,6 +53,9 @@ async function getInitialCityTemp() {
 
   updateMainIcon(description);
 
+  const windSpeed = Math.round(data.wind.speed);
+  updateWindInfo(windSpeed);
+
   showInitForecast();
 }
 
@@ -82,6 +85,11 @@ function updateCurrentWeatherDescription(descr) {
   weatherDescriptionRef.textContent = descr;
 }
 
+function updateWindInfo(speed) {
+  const windSpeedRef = document.querySelector("#wind-speed");
+  windSpeedRef.textContent = `Wind speed: ${speed} m/s`;
+}
+
 document.addEventListener("DOMContentLoaded", getInitialCityTemp);
 
 /**************************************************************************************************************************/
@@ -102,6 +110,9 @@ async function showWeather(e) {
   updateCurrentWeatherDescription(description);
 
   updateMainIcon(description);
+
+  const windSpeed = Math.round(data.wind.speed);
+  updateWindInfo(windSpeed);
 
   const forecastRef = document.querySelector(".main_content__right");
   forecastRef.innerHTML = "";
@@ -141,6 +152,9 @@ async function showWeatherInMyCity() {
     updateCurrentWeatherDescription(description);
 
     updateMainIcon(description);
+
+    const windSpeed = Math.round(data.wind.speed);
+    updateWindInfo(windSpeed);
 
     const forecastRef = document.querySelector(".main_content__right");
     forecastRef.innerHTML = "";

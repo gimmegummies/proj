@@ -160,6 +160,12 @@ footer {
   min-height: 20px;
 }
 
+.wind_speed {
+  grid-column: span 2;
+  text-align: left;
+  padding: 0 0.5rem;
+}
+
 .main_content__right {
   /* background-color: #e5e5e5; */
   background-color: #fff;
