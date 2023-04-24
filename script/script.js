@@ -1,5 +1,7 @@
 /**************************************************************************************************************************/
 let temp = null;
+let forecastTempRefs = [];
+// let forecastTemps = [];
 
 //*displaying date and time
 
@@ -309,6 +311,18 @@ const fahrUnit = document.querySelector("#temp-fahrenheit");
 
 function getCelsius() {
   tempDisp.textContent = temp;
+
+  forecastTempRefs = document.querySelectorAll(".forecast-temp");
+
+  let forecastTemps = getForecastTemp();
+  let forecastTempsCels = getForecastTempCels(forecastTemps);
+
+  for (let i = 0; i < forecastTempRefs.length; i++) {
+    const celsTemp = forecastTempsCels[i];
+    const tempElem = forecastTempRefs[i];
+    tempElem.textContent = `${celsTemp}°`;
+  }
+
   toggleActiveClass(fahrUnit);
   toggleActiveClass(celsUnit);
 }
@@ -316,6 +330,18 @@ function getCelsius() {
 function getFahrenheit() {
   let temperatureFahr = Math.floor(temp * 1.8 + 32);
   tempDisp.textContent = temperatureFahr;
+
+  forecastTempRefs = document.querySelectorAll(".forecast-temp");
+
+  let forecastTemps = getForecastTemp(); // extracting the forecast temperatures in celsius
+  let forecastTempsFahr = getForecastTempFahr(forecastTemps); // converting temp to fahrenheit and creating another array
+
+  for (let i = 0; i < forecastTempRefs.length; i++) {
+    const fahrTemp = forecastTempsFahr[i];
+    const tempElem = forecastTempRefs[i];
+    tempElem.textContent = `${fahrTemp}°`;
+  }
+
   toggleActiveClass(fahrUnit);
   toggleActiveClass(celsUnit);
 }
@@ -332,7 +358,43 @@ function toggleActiveClass(element) {
 //   element.classList.toggle("active");
 // }
 
+function getForecastTemp() {
+  forecastTempRefs = document.querySelectorAll(".forecast-temp");
+
+  let forecastTemps = [];
+
+  forecastTempRefs.forEach((elem) => {
+    forecastTemps.push(elem.innerHTML);
+  });
+
+  return forecastTemps;
+}
+
+function getForecastTempFahr(forecastTemperaturesArray) {
+  let forecastTempsFahr = [];
+
+  forecastTemperaturesArray.forEach((elem) => {
+    let tempCelsius = parseInt(elem, 10); // convert the string to an integer
+    let tempFahrenheit = tempCelsius * 1.8 + 32;
+
+    forecastTempsFahr.push(Math.round(tempFahrenheit));
+  });
+
+  return forecastTempsFahr;
+}
+
+function getForecastTempCels(forecastTemperaturesArray) {
+  let forecastTempsCels = [];
+
+  forecastTemperaturesArray.forEach((elem) => {
+    let tempFahr = parseInt(elem, 10); // convert the string to an integer
+    let tempCelsius = ((tempFahr - 32) * 5) / 9;
+
+    forecastTempsCels.push(Math.round(tempCelsius));
+  });
+
+  return forecastTempsCels;
+}
+
 celsUnit.addEventListener("click", getCelsius);
 fahrUnit.addEventListener("click", getFahrenheit);
-
-// TODO: make units switcher for the forecast
